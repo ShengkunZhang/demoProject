@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Author</key>
+	<string>Thomas Off</string>
+	<key>Builder Version</key>
+	<string>12602.2.14.0.7</string>
+	<key>CFBundleDisplayName</key>
+	<string>QRify</string>
+	<key>CFBundleIdentifier</key>
+	<string>de.retiolum.safari.qrify</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+	<key>Chrome</key>
+	<dict>
+		<key>Global Page</key>
+		<string>global.html</string>
+		<key>Popovers</key>
+		<array>
+			<dict>
+				<key>Filename</key>
+				<string>popover.code.html</string>
+				<key>Height</key>
+				<integer>220</integer>
+				<key>Identifier</key>
+				<string>de.retiolum.safari.qrify.popover.code</string>
+				<key>Width</key>
+				<integer>220</integer>
+			</dict>
+		</array>
+		<key>Toolbar Items</key>
+		<array>
+			<dict>
+				<key>Identifier</key>
+				<string>de.retiolum.safari.qrify.toolbarItem.create</string>
+				<key>Image</key>
+				<string>Images/toolbar.qrify.png</string>
+				<key>Include By Default</key>
+				<true/>
+				<key>Label</key>
+				<string>Generate QR code</string>
+				<key>Popover</key>
+				<string>de.retiolum.safari.qrify.popover.code</string>
+			</dict>
+		</array>
+	</dict>
+	<key>Description</key>
+	<string>Generate QR code of current website's URL</string>
+	<key>DeveloperIdentifier</key>
+	<string>RSADU6MKX9</string>
+	<key>ExtensionInfoDictionaryVersion</key>
+	<string>1.0</string>
+	<key>Permissions</key>
+	<dict>
+		<key>Website Access</key>
+		<dict>
+			<key>Include Secure Pages</key>
+			<true/>
+			<key>Level</key>
+			<string>All</string>
+		</dict>
+	</dict>
+	<key>Update Manifest URL</key>
+	<string>https://gitlab.com/retiolum/QRify.safariextension/raw/master/Update.plist</string>
+	<key>Website</key>
+	<string>https://gitlab.com/retiolum/QRify.safariextension</string>
+</dict>
+</plist>
