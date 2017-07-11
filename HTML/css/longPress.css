@@ -1,0 +1,6 @@
+
+/* 快读模式css设置 */
+* {
+  user-select: none;
+  -webkit-touch-callout: none;
+}

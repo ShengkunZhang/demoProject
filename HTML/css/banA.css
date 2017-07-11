@@ -1,0 +1,65 @@
+/*禁止练级被点击 且使链接无特殊颜色*/
+a {
+  /*是否可以相应点击事件*/
+  pointer-events: none;
+  /*cursor是光标的形状*/
+  cursor: default;
+  /*字体的颜色*/
+  color: #222;
+  /*链接下面是否出现下划线*/
+  text-decoration: none;
+}
+
+/* 快读模式css设置 */
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-entity] {
+  line-height: 0.4em;
+  padding-bottom: 2px;
+  display: inline-block;
+  /* 背景颜色透明 */
+  /*background: transparent;*/
+  background-color: rgba(235, 75, 25, 0.2);
+}
+
+[data-entity]:after {
+  box-sizing: border-box;
+  content: attr(data-entity);
+  line-height: 0.5em;
+  display: inline-block;
+}
+
+.entities {
+  font-family: "Times New Roman", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.6em;
+  color: #222;
+  /* 内部区域的左右上下间距 */
+  /*padding: 25px 50px;*/
+}
+
+.entities [data-entity] {
+  position: relative;
+  cursor: help;
+  /* 出现下划线 */
+  /*border-bottom: 3px solid;*/
+  /* 下划线的颜色 */
+  /*border-bottom-color: #2fbbab;*/
+}
+
+.entities [data-entity]:after {
+  opacity: 1;
+  font-size: 10px;
+  text-transform: uppercase;
+  position: absolute;
+  top: -0.8em;
+  left: 0;
+  right: 0;
+  text-align: center;
+  -webkit-transition: opacity 0.25s ease;
+  transition: opacity 0.25s ease;
+  color: #333;
+}

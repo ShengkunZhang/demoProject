@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>This is a title</title>
+    <link rel="stylesheet" type="text/css" href="normalize.css">
+    <link rel="stylesheet" type="text/css" href="skeleton.css">
+    <link rel="stylesheet" type="text/css" href="article.css">
+    <link rel="stylesheet" type="text/css" href="banA.css">
+    <link rel="stylesheet" type="text/css" href="longPress.css">
+</head>
+<body>
+    <span class="kicker">ScientificAmerican</span>
+    <h1 class="article_title">Scientific American Science in Action in Swaziland</h1>
+    <h1 class="article_subtitle">We judges and others who work on the Google Science Fair believe that kids have the power to change the world. The $50,000 Scientific American Science in Action Award recognizes a particular type of changeone that focuses on making a practical difference by addressing an environmental, health or resources challenge.</h1>
+    <figure>
+      <img src="https://mmbiz.qpic.cn/mmbiz_png/foPACGrddJ0rNg7Koia1TeDFXox0OXsyZibD9dKQcNZ6fCOpm1XJZql8pVDO6nWeh56fTdhjz6ic6woecQhSobUuA/640?tp=webp&wxfrom=5&wx_lazy=1">
+      <figcaption class="imageCaption">Transitioning between routes for a broad search</figcaption>
+    </figure>
+
+    <div class="article_content">
+        <pre class="hljs pf">
+          <code class="pf">
+            //iOS8中titleLabel的size为<span class="hljs-number">0</span>，用下面的这种设置
+            <span class="hljs-keyword">label</span>Width = <span class="hljs-literal">self</span>.titleLabel.intrinsicContentSize.width;
+            <span class="hljs-keyword">label</span>Height = <span class="hljs-literal">self</span>.titleLabel.intrinsicContentSize.height;
+          </code>
+        </pre>
+
+        <li>Sakhiwe Shongwe </li>
+        <ul>
+          <li>Bluetooth</li>
+          <li>Other Hardware</li>
+          <li>Sakhiwe Shongwe (left center, in green sweater), Bonkhe Mahlalela (right center, in green sweater) and local farmers in Swaziland.</li>
+        </ul>
+        <h1>Scientific American Science in Action in Swaziland</h1>
+        <em>Sakhiwe Shongwe (left center, in green sweater), Bonkhe Mahlalela (right center, in green sweater) and local farmers in Swaziland. Credit: Sahkiwe Shongwe</em>
+        <p>We judges and others who work on the <a>Google Science Fair</a> believe that kids have the power to change the world. The $50,000 <em>Scientific American</em> Science in Action Award recognizes a particular type of change–one that focuses on making a practical difference by addressing an environmental, health or resources challenge. (For more on the award and the prize, see the <a><em>Scientific American</em> Science in Action page</a>.) We caught up with Sakhiwe Shongwe, who with Bonkhe Mahlalela, won in 2012 when they were 14, to find out what he was doing now.</p>
+        <h1>Scientific American Science in Action in Swaziland</h1>
+        <pre class="hljs swift"><code class="swift">    <span class="hljs-meta">@IBOutlet</span> <span class="hljs-keyword">weak</span> <span class="hljs-keyword">var</span> mainScrollView: <span class="hljs-type">UIScrollView</span>!
+    <span class="hljs-meta">@IBOutlet</span> <span class="hljs-keyword">weak</span> <span class="hljs-keyword">var</span> subScrollView: <span class="hljs-type">UIScrollView</span>!
+
+    <span class="hljs-keyword">let</span> maxOffsetY: <span class="hljs-type">CGFloat</span> = <span class="hljs-number">150</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">scrollViewDidScroll</span><span class="hljs-params">(<span class="hljs-number">_</span> scrollView: UIScrollView)</span></span> {
+        <span class="hljs-keyword">if</span> scrollView == mainScrollView {
+            <span class="hljs-keyword">if</span> scrollView.contentOffset.y &gt;= maxOffsetY {
+                mainScrollView.isScrollEnabled = <span class="hljs-literal">false</span>
+                subScrollView.isScrollEnabled = <span class="hljs-literal">true</span>
+            }
+        }<span class="hljs-keyword">else</span> {
+            <span class="hljs-comment">// 当 subScrollView 滑动到顶时，停止响应，mainScrollView 开始响应。</span>
+            <span class="hljs-keyword">if</span> scrollView.contentOffset.y &lt;= <span class="hljs-number">0</span> {
+                subScrollView.isScrollEnabled = <span class="hljs-literal">false</span>
+                mainScrollView.isScrollEnabled = <span class="hljs-literal">true</span>
+            }
+        }
+    }</code></pre>
+        <p>By the way, entries are open until May 12 for students ages 13-18. Good luck!</p>
+        <blockquote>
+          Here is a long quotation here is a long quotation here is a long quotation
+          here is a long quotation here is a long quotation here is a long quotation
+          here is a long quotation here is a long quotation here is a long quotation.
+        </blockquote>
+
+    </div>
+
+</body>
+</html>
