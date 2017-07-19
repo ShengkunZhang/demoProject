@@ -214,18 +214,18 @@ function getNodeTextAndPreLength(node) {
     }
 
     while(preNode) { // 节点存在 则计算长度
-     if (preNode.nodeType == Node.TEXT_NODE) {
+      if (preNode.nodeType == Node.TEXT_NODE) {
        preLength += preNode.textContent.length;
-     } else if (preNode.nodeType == Node.ELEMENT_NODE) {
+      } else if (preNode.nodeType == Node.ELEMENT_NODE) {
        preLength += preNode.innerText.length;
-     }
-     if (preNode.previousSibling) {
+      }
+      if (preNode.previousSibling) {
          preNode = preNode.previousSibling;
-     } else {
+      } else {
          preNode = null;
-     }
-   }
-     return [allText, preLength, nodeID];
+      }
+    }
+    return [allText, preLength, nodeID];
 }
 
 // 获得整段文字和点击所在节点之前字符的长度
