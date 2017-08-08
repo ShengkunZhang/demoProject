@@ -10,7 +10,7 @@ $(function() {
 // 是快读模式吗 false 不是，true 是
 var isFastRead = false;
 // 节点数组
-var nodeArr = new Array();
+var nodeArr = [];
 
 // 根据点击事件获取相关信息
 function getInformationWithTapClick(event) {

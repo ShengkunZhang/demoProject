@@ -62,6 +62,12 @@ function getInformationWithSelection() {
 var isFastRead = false;
 // 节点数组
 var nodeArr = [];
+// 补充词典
+var serverDict = [];
+// 处理每个单词用时
+var useTimeArr = [];
+// 相对应的每个单词类型
+var useTypeArr = [];
 
 $(function() {
   // 对div标签上的点击事件的监控
@@ -76,6 +82,50 @@ $(function() {
     }
   });
 });
+
+// 获得OC端的服务器端补充的词典
+function getServerDict(dict) {
+  // 传进来的是base64编码的字符串
+  // 自定义解码对象，系统的对中文的字符（Unicode类型的）atob(base64Str)的结果不尽人意
+  var baseOC = new Base64();
+  // 首先解码
+  var dictStr = baseOC.decode(dict);
+  serverDict = [];
+  var obj = JSON.parse(json);
+  for (var i = 0; i < obj.length; i++) {
+    var temp = obj[i];
+    object = new serverWordObject(temp.word, temp.type, temp.root, temp.meaning, temp.context);
+    serverDict.push(object);
+  }
+}
+
+function serverWordObject(word, type, root, meaning, context) {
+  if (!word) {
+    word = '';
+  }
+
+  if (!meaning) {
+    meaning = '';
+  }
+
+  if (!context) {
+    context = '';
+  }
+
+  if (!root) {
+    root = word;
+  }
+
+  if (!type) {
+    type = 'word';
+  }
+
+  this.root = root; // 如果没有root则代表root = word
+  this.word = word;
+  this.type = type; // type现在有：word（单词）、phrase（短语）、org（组织名）、person（人名）、loc（地名），如果无type字段，则代表word（单词）
+  this.meaning = meaning;
+  this.context = context; // 这个词语所在的句子或者一小段话，没有则代表全局处理
+}
 
 // 根据点击事件获取相关信息
 function getInformationWithTapClick(event) {
@@ -145,7 +195,10 @@ function getInformationWithTapClick(event) {
     // 去除字符左右的特殊字符 得到更为准确的单击位置的单词
     word = deleteSpecialChara(word);
     // 根据选中的单词及其所在的句子。得到经过词性分析后的单词及其原本的形式（名词变为单数，动词变为不定式）
+
+    console.log('之前' + getNowTime());
     var wordArr = handleSentenceAndTapWord(data, word, begin, sentenceTemp);
+    console.log('之后' + getNowTime());
     word = wordArr[0]; // 经过处理后确定的选中单词
     var root = wordArr[1]; // 选中单词的词根
     var realIndex = wordArr[2]; // 在当前节点中的真实的开始位置
@@ -163,6 +216,12 @@ function getInformationWithTapClick(event) {
     selectSentence = deleteSpecialChara(selectSentence, true); // 去除首尾的空格和换行符
 
     return [word, selectSentence, allText, beginOffset, endOffset, isAdd, root, wordType];
+}
+
+function getNowTime() {
+  var date = new Date();
+  var result = date.getTime();
+  return result;
 }
 
 // 根据range 获取frame
@@ -241,10 +300,16 @@ function getParentNodeTextAndNodeLocal(node) {
     allText = paragraphNode.innerText;
     // 校正文字的位置
     nodeText = getNodeText(node);
-    realIndex = realIndex = allText.indexOf(nodeText, length);
-    if (realIndex == -1) {
-      length --;
-      realIndex = allText.indexOf(nodeText, length);
+    var tempAllText = deleteSpecialChara(allText, true);
+    nodeText = deleteSpecialChara(nodeText, true);
+    realIndex = tempAllText.indexOf(nodeText, length);
+    while (realIndex == -1) {
+      realIndex = tempAllText.indexOf(nodeText, length);
+      if (length <= 0) {
+        realIndex = 0;
+      } else {
+        length --;
+      }
     }
     return [length, allText];
 }
@@ -372,6 +437,10 @@ function handleCloseFastRead() {
 // 处理开启快读
 function handleOpenFastRead() {
     nodeArr = [];
+    useTimeArr = [];
+    useTypeArr = [];
+    var beforTime = getNowTime();
+    console.log('开始时间: ' + beforTime);
     // 找到div层
     var divNode = document.getElementsByTagName('div')[0];
     // 找到div层的子节点
@@ -379,6 +448,36 @@ function handleOpenFastRead() {
     for (var i = 0; i < nodeArr.length; i++) {
         handleFastNode(nodeArr[i]);
     }
+    var afterTime = getNowTime();
+    console.log('结束时间:' + afterTime + '总用时:' + (afterTime - beforTime));
+
+    var length = 0;
+    for (var j = 0; j < useTimeArr.length; j++) {
+      length += useTimeArr[j];
+    }
+    var averTime = length / 1.0 / useTimeArr.length;
+    console.log('总数：' + useTimeArr.length + '总时间:' + length + '平均时间:' + averTime);
+    console.log('词性分析占比为：' + length / 1.0 / (afterTime - beforTime));
+
+    // tempArr = ['people', 'place', 'organization', 'server', 'normal'];
+    // for (var k = 0; k < tempArr.length; k++) {
+    //   wordType = tempArr[k];
+    //   length = 0;
+    //   count = 0;
+    //   averTime = 0;
+    //   temp1Arr = [];
+    //   for (j = 0; j < useTimeArr.length; j++) {
+    //     otherWordType = useTypeArr[j];
+    //     if (wordType == otherWordType) {
+    //       length += useTimeArr[j];
+    //       count ++;
+    //       temp1Arr.push(useTimeArr[j]);
+    //     }
+    //   }
+    //   averTime = length / 1.0 / count;
+    //   console.log('类型:' + wordType + ', 总数：' + count + ', 总时间:' + length + ', 平均时间:' + averTime);
+    //   console.log(temp1Arr);
+    // }
 }
 
 // 处理快读节点逻辑
@@ -501,7 +600,8 @@ function isNewWord(word) {
 // 获得单词的词义
 function getMean(word, wordType) {
     // 用prompt函数与oc交互
-    var mean = prompt(word, '无');
+    // var mean = prompt(word, '无');
+    var mean = word;
     if (mean == '无') {
       if (wordType == 'people') {
         mean = '人名';
@@ -509,6 +609,8 @@ function getMean(word, wordType) {
         mean = '地名';
       } else if (wordType == 'organization') {
         mean = '组织名';
+      } else if (wordType == 'server') {
+        mean = '词组';
       }
     }
     return mean;
@@ -561,6 +663,9 @@ function isHasAEnglishLetters(string) {
 }
 
 function getSentenceArrWithString(string) {
+  // var nlp = window.nlp;
+  // var arr = nlp.sentenceParser(string);
+  // console.log(arr);
   // 句子解析对象
   var nlp = window.nlp(string);
   // 把一段字符串 截取成句子对象数组
@@ -585,9 +690,11 @@ function getSentenceWithAllText(allText, preLength, data) {
   for (var i = 0; i < sentenceArr.length; i++) {
     text = sentenceArr[i];
     if (length + text.length > realIndex) {
-      return text;
+      data = text;
+      break;
+    } else {
+      length += text.length;
     }
-    length += text.length;
   }
   return data;
 }
@@ -674,11 +781,16 @@ function getWordAndRootWithNode(node) {
       word = deleteSpecialChara(word);
       begin = nodeText.indexOf(word, begin);
       // 根据选中的单词及其所在的句子。得到经过词性分析后的单词及其原本的形式（名词变为单数，动词变为不定式）
+      var beforeTime = getNowTime();
       arr = handleSentenceAndTapWord(nodeText, word, begin, sentenceTemp);
+      var afterTime = getNowTime();
+      useTimeArr.push(afterTime - beforeTime);
+      begin += word.length;
       var endWord = arr[0]; // 经过处理后确定的选中单词
       root = arr[1]; // 选中单词的词根
       realIndex = arr[2]; // 在当前节点中的真实的开始位置
       wordType = arr[3]; // 单词的类型
+      useTypeArr.push(wordType);
       var isExist = false; // 是否存在，初始为不存在
       var arrLength = endWordArr.length;
       if (arrLength > 0) {
@@ -714,30 +826,39 @@ function getWordAndRootWithNode(node) {
 function handleSentenceAndTapWord(data, word, begin, sentence) {
   // 选中单词的词根
   var root = '';
-  var wordType = 'normal'; // 普通的动词或者名词为normal, 人名为people, 地名为place, 组织名organization
+  var wordType = 'normal'; // 普通的动词或者名词为normal, 人名为people, 地名为place, 组织名organization, 服务器补充的单词server
   var realIndex = 0;
   var nlp = window.nlp(sentence);
-  // 找到人名，组织名称，地名 例如:Mr. Trump, China , Washington
-  // 具体区分单词属性
-  var topicObjectArr = nlp.topics().data();
-  var peopleArr = nlp.people().data();
-  var placeArr = nlp.places().data();
-  var organizationArr = nlp.organizations().data();
+
   // 先进行topic 识别
-  for (var k = 0; k < 3; k++) {
+  for (var k = 0; k < 4; k++) {
     var tempArr = [];
+    // 找到人名，组织名称，地名 例如:Mr. Trump, China , Washington
+    // 具体区分单词属性
     if (k == 0) {
-      tempArr = peopleArr;
-      wordType ='people';
+        // 人名
+        tempArr = nlp.people().data();
+        wordType ='people';
     } else if (k == 1) {
-      tempArr = placeArr;
-      wordType ='place';
+        // 地名
+        tempArr = nlp.places().data();
+        wordType ='place';
     } else if (k == 2) {
-      tempArr = organizationArr;
-      wordType ='organization';
+        // 组织名
+        tempArr = nlp.organizations().data();
+        wordType ='organization';
+    } else if (k == 3) {
+        // 服务器端补充词汇
+        tempArr = serverDict;
+        wordType = 'server';
     }
     for (var i = 0; i < tempArr.length; i++) {
-      var text = tempArr[i].text;
+      var text = '';
+      if (wordType == 'server') {
+        text = tempArr[i];
+      } else {
+        text = tempArr[i].text;
+      }
       text = deleteSpecialChara(text);
       var textArr = text.split(' ');
       for (var j = 0; j < textArr.length; j++) {
@@ -746,21 +867,25 @@ function handleSentenceAndTapWord(data, word, begin, sentence) {
         if (word == smallText) {
           // 查看确定的单词是否在句子中
           realIndex = data.indexOf(text, begin);
-          var count = 0;
-          var isFind = true;
-          while (realIndex < 0) {
-            begin --;
-            count ++;
-            realIndex = data.indexOf(text, begin);
-            if (count == text.length) {
-              realIndex = 0;
-              isFind = false;
+          // 如果词组选中例如New York 则New York的开始位置是New或者York的起始位置，则此位置大于或者等于New York的起始位置，如果不是则词组匹配失败
+          var tempBegin = begin;
+          if (begin >= realIndex) {
+            var count = 0;
+            var isFind = true;
+            while (realIndex < 0) {
+              tempBegin --;
+              count ++;
+              realIndex = data.indexOf(text, tempBegin);
+              if (count == text.length) {
+                realIndex = 0;
+                isFind = false;
+              }
             }
-          }
-          if (isFind) {
-            word = text;
-            root = text;
-            return [word, root, realIndex, wordType];
+            if (isFind) {
+              word = text;
+              root = text;
+              return [word, root, realIndex, wordType];
+            }
           }
         }
       }
@@ -792,4 +917,110 @@ function handleSentenceAndTapWord(data, word, begin, sentence) {
 
   root = word.toLowerCase();
   return [word, root, realIndex, wordType];
+}
+
+function Base64() {
+
+    // private property
+    _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+
+    // public method for encoding
+    this.encode = function (input) {
+        var output = "";
+        var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+        var i = 0;
+        input = _utf8_encode(input);
+        while (i < input.length) {
+            chr1 = input.charCodeAt(i++);
+            chr2 = input.charCodeAt(i++);
+            chr3 = input.charCodeAt(i++);
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
+            if (isNaN(chr2)) {
+                enc3 = enc4 = 64;
+            } else if (isNaN(chr3)) {
+                enc4 = 64;
+            }
+            output = output +
+            _keyStr.charAt(enc1) + _keyStr.charAt(enc2) +
+            _keyStr.charAt(enc3) + _keyStr.charAt(enc4);
+        }
+        return output;
+    };
+
+    // public method for decoding
+    this.decode = function (input) {
+        var output = "";
+        var chr1, chr2, chr3;
+        var enc1, enc2, enc3, enc4;
+        var i = 0;
+        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+        while (i < input.length) {
+            enc1 = _keyStr.indexOf(input.charAt(i++));
+            enc2 = _keyStr.indexOf(input.charAt(i++));
+            enc3 = _keyStr.indexOf(input.charAt(i++));
+            enc4 = _keyStr.indexOf(input.charAt(i++));
+            chr1 = (enc1 << 2) | (enc2 >> 4);
+            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+            chr3 = ((enc3 & 3) << 6) | enc4;
+            output = output + String.fromCharCode(chr1);
+            if (enc3 != 64) {
+                output = output + String.fromCharCode(chr2);
+            }
+            if (enc4 != 64) {
+                output = output + String.fromCharCode(chr3);
+            }
+        }
+        output = _utf8_decode(output);
+        return output;
+    };
+
+    // private method for UTF-8 encoding
+    _utf8_encode = function (string) {
+        string = string.replace(/\r\n/g,"\n");
+        var utftext = "";
+        for (var n = 0; n < string.length; n++) {
+            var c = string.charCodeAt(n);
+            if (c < 128) {
+                utftext += String.fromCharCode(c);
+            } else if((c > 127) && (c < 2048)) {
+                utftext += String.fromCharCode((c >> 6) | 192);
+                utftext += String.fromCharCode((c & 63) | 128);
+            } else {
+                utftext += String.fromCharCode((c >> 12) | 224);
+                utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                utftext += String.fromCharCode((c & 63) | 128);
+            }
+
+        }
+        return utftext;
+    };
+
+    // private method for UTF-8 decoding
+    _utf8_decode = function (utftext) {
+        var string = "";
+        var i = 0;
+        var c = 0;
+        var c1 = 0;
+        var c2 = 0;
+        while ( i < utftext.length ) {
+            c = utftext.charCodeAt(i);
+            if (c < 128) {
+                string += String.fromCharCode(c);
+                i++;
+            } else if((c > 191) && (c < 224)) {
+                c2 = utftext.charCodeAt(i+1);
+                string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+                i += 2;
+            } else {
+                c2 = utftext.charCodeAt(i+1);
+                c3 = utftext.charCodeAt(i+2);
+                string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+                i += 3;
+            }
+        }
+        return string;
+    };
 }

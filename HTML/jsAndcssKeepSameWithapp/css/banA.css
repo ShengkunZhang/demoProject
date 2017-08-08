@@ -68,3 +68,18 @@ a {
   transition: opacity 0.25s ease;
   color: #787878;
 }
+
+figcaption.entities [data-entity]:after  {
+  opacity: 1;
+  font-size: 9px;
+  font-weight: normal;
+  text-transform: uppercase;
+  position: absolute;
+  top: -0.9em;
+  left: 0;
+  right: 0;
+  text-align: center;
+  -webkit-transition: opacity 0.25s ease;
+  transition: opacity 0.25s ease;
+  color: #787878;
+}
