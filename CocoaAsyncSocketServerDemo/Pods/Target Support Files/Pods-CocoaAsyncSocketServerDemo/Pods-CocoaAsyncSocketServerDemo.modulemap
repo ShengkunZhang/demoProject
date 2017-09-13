@@ -1,0 +1,6 @@
+framework module Pods_CocoaAsyncSocketServerDemo {
+  umbrella header "Pods-CocoaAsyncSocketServerDemo-umbrella.h"
+
+  export *
+  module * { export * }
+}

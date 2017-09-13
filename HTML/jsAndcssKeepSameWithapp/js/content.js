@@ -85,13 +85,13 @@ $(function() {
 
 // 获得OC端的服务器端补充的词典
 function getServerDict(dict) {
-  // 传进来的是base64编码的字符串
-  // 自定义解码对象，系统的对中文的字符（Unicode类型的）atob(base64Str)的结果不尽人意
-  var baseOC = new Base64();
-  // 首先解码
-  var dictStr = baseOC.decode(dict);
-  serverDict = [];
-  var obj = JSON.parse(json);
+  // // 传进来的是base64编码的字符串
+  // // 自定义解码对象，系统的对中文的字符（Unicode类型的）atob(base64Str)的结果不尽人意
+  // var baseOC = new Base64();
+  // // 首先解码
+  // var dictStr = baseOC.decode(dict);
+  // serverDict = [];
+  var obj = JSON.parse(dict);
   for (var i = 0; i < obj.length; i++) {
     var temp = obj[i];
     object = new serverWordObject(temp.word, temp.type, temp.root, temp.meaning, temp.context);
@@ -105,7 +105,9 @@ function serverWordObject(word, type, root, meaning, context) {
   }
 
   if (!meaning) {
-    meaning = '';
+    meaning = '无';
+  } else {
+    meaning = handleMeaning(meaning);
   }
 
   if (!context) {
@@ -125,6 +127,27 @@ function serverWordObject(word, type, root, meaning, context) {
   this.type = type; // type现在有：word（单词）、phrase（短语）、org（组织名）、person（人名）、loc（地名），如果无type字段，则代表word（单词）
   this.meaning = meaning;
   this.context = context; // 这个词语所在的句子或者一小段话，没有则代表全局处理
+}
+
+// 处理翻译字段过长或者其中包含特殊字符这两种情况
+function handleMeaning(meaning) {
+  console.log('之前>>' + meaning);
+  meaning = meaning.replace(/(\(.*?\))|(（.*?）)|(\[.*?\])|(［.*?］)|(【.*?】)|({.*?})|(〈.*?〉)|(\s)/g,'');
+  meaning = meaning.replace(/(，)|(,)|(!)|(！)|(；)|(;)|(\?)|(？)|(。)/g,' ');
+  var arr = meaning.split(' ');
+  for (var i = 0; i < arr.length; i++) {
+    if (i == 0) {
+      meaning = arr[i];
+    } else {
+      if (meaning.length > arr[i].length && arr[i] != '') {
+        meaning = arr[i];
+      }
+    }
+  }
+  if (meaning == '') {
+    meaning = '无';
+  }
+  return meaning;
 }
 
 // 根据点击事件获取相关信息

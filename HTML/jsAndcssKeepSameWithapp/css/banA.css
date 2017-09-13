@@ -16,6 +16,8 @@ a {
   -webkit-font-smoothing: antialiased;
   /* 点击标签的背景色为透明 */
   -webkit-tap-highlight-color: transparent;
+  /* 断句 */
+  -webkit-hyphens: auto; 
 }
 
 [data-entity] {

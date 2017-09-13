@@ -83,7 +83,7 @@
             }).call(this, typeof global !== "undefined" ? global: typeof self !== "undefined" ? self: typeof window !== "undefined" ? window: {})
         },
         {
-            "./sentence_parser":209
+            "./sentence_parser": 209
         }],
         9 : [function(_dereq_, module, exports) {
             //these are common word shortenings used in the lexicon and sentence segmentation methods
