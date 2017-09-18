@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  LocalizationAndInternationalizationDemo
+
+  Created by zsk on 2017/9/15.
+  Copyright © 2017年 zsk. All rights reserved.
+*/
+// 代码中的文字本地化
+
+localization = "本地化";
+internationalizartion = "国际化";
+
+icon = "flup_1603";

@@ -1,0 +1,12 @@
+
+/* Class = "UILabel"; text = "测试用的"; ObjectID = "0j3-Wv-qZj"; */
+"0j3-Wv-qZj.text" = "English1";
+
+/* Class = "UILabel"; text = "测试用的"; ObjectID = "BHa-Ed-Ear"; */
+"BHa-Ed-Ear.text" = "English2";
+
+/* Class = "UINavigationItem"; title = "国际化测试"; ObjectID = "RE3-NV-mJk"; */
+"RE3-NV-mJk.title" = "English Title";
+
+/* Class = "UILabel"; text = "国际化测试"; ObjectID = "knJ-x1-3Rk"; */
+"knJ-x1-3Rk.text" = "English";

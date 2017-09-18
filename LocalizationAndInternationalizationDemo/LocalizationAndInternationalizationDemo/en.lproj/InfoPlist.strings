@@ -1,0 +1,11 @@
+/* 
+  InfoPlist.strings
+  LocalizationAndInternationalizationDemo
+
+  Created by zsk on 2017/9/15.
+  Copyright © 2017年 zsk. All rights reserved.
+*/
+// app 在英语状态下的展示
+
+// app的名字
+CFBundleDisplayName = "LocalizationDemo";
