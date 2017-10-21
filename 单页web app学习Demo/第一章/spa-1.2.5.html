@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+<head>
+  <title>SPA Chapter 1 section 1.2.5</title>
+  <style type="text/css">
+    /*body 原生定义标签*/
+    body {
+      /*覆盖全屏*/
+      width    : 100%;
+      height   : 100%;
+      /*超出部分隐藏*/
+      overflow : hidden;
+      /*背景色*/
+      background-color : #777;
+    }
+
+    /*id*/
+    #spa {
+      position : absolute;
+      /*居 上 左 下 右 距离为8*/
+      top      : 8px;
+      left     : 8px;
+      bottom   : 8px;
+      right    : 8px;
+      /*圆角弧度  上部左8 上部右8 下部右0 下部左8*/
+      border-radius    : 8px 8px 0 8px;
+      /*背景色*/
+      background-color : #fff;
+    }
+
+    /*class*/
+    .spa-slider {
+      position : absolute;
+      /*距下0  距右2 宽度300 高度16*/
+      bottom   : 0;
+      right    : 2px;
+      width    : 300px;
+      height   : 16px;
+      cursor   : pointer;
+      /*圆角弧度  上部左8 上部右0 下部右0 下部左0*/
+      border-radius    : 8px 0 0 0;
+      background-color : #f00;
+    }
+  </style>
+  <!-- 导入jquery -->
+  <script type="text/javascript" src=
+    "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+  </script>
+
+  <!-- 编写javascript代码 -->
+  <script type="text/javascript">
+  // 引入jslint 设置，确保代码不会出现常用的编码错误 具体含义暂时不用处理 附录A中有更多细节的解释
+  /*jslint         browser : true, continue : true,
+    devel  : true, indent  : 2,    maxerr   : 50,
+    newcap : true, nomen   : true, plusplus : true,
+    regexp : true, sloppy  : true, vars     : true,
+    white  : true
+  */
+  /*global jQuery */
+
+
+  // 0. Module /spa/
+  // Provides chat slider capability
+  // 定义spa模块 提供聊天滑动功能
+  var spa = (function ( $ ) {
+
+
+    // 1. Module scope variables 在使用之前声明所有的变量，把模块的配置值保存在configMap中，把模块的状态值保存在stateMap中
+    var
+      // Set constants 定义常量
+      configMap = {
+        // 聊天模块默认是缩放的
+        // 聊天模块展开时的高度
+        extended_height  : 434,
+        // 聊天模块展开时title属性的值 例如<div class="spa-slider" title="Click to retract" style="height: 434px;"></div>
+        extended_title   : 'Click to retract',
+        // 聊天模块默认状态时的高度
+        retracted_height : 16,
+        // 聊天模块默认状态时title的值
+        retracted_title  : 'Click to extend',
+        // 模块最初html构造
+        template_html    : '<div class="spa-slider"><\/div>'
+      },
+
+      // Declare all other module scope variables 定义整个模块范围内可使用的变量
+      $chatSlider,
+      toggleSlider, onClickSlider, initModule;
+
+
+
+    // 2. DOM method /toggleSlider/
+    // alternates slider height
+    // 操作DOM的方法定义 管理聊天模块的高度
+    toggleSlider = function () {
+      // 获取当前的高度
+      var
+        slider_height = $chatSlider.height();
+
+      // extend slider if fully retracted 如果高度等于默认高度 此时要做扩展
+      if ( slider_height === configMap.retracted_height ) {
+        // 改变高度（以动画形式表现，使用jQuery动画）和 title的值
+        $chatSlider
+          .animate({ height : configMap.extended_height })
+          // 改变属性title的值
+          .attr( 'title', configMap.extended_title );
+        return true;
+      }
+
+      // retract slider if fully extended 如果等于展开时的高度 此时要做缩放
+      else if ( slider_height === configMap.extended_height ) {
+        // 改变高度（以动画形式表现）和 title的值
+        $chatSlider
+          .animate({ height : configMap.retracted_height })
+          .attr( 'title', configMap.retracted_title );
+        return true;
+      }
+      // do not take action if slider is in transition
+      return false;
+    };
+
+    // Event handler /onClickSlider/
+    // receives click event and calls toggleSlider
+    // 点击事件处理函数，收到点击事件，并调用toggleSlider函数处理逻辑
+    // 把所有的事件处理程序集中在一个区块中。保持小而专注的处理程序是很好的做法。
+    // 它们应该调用其他的方法更新显示或者修改业务逻辑
+    onClickSlider = function ( event ) {
+      toggleSlider();
+      return false;
+    };
+
+    // Public method /initModule/
+    // sets initial state and provides feature
+    // 定义需要暴露给外部使用的接口函数，设置初始化状态和提供一些特征
+    // 把所有的公开方法集中在一个区块中
+    initModule = function ( $container ) {
+
+      // render HTML 添加滑动模板的HTML代码，来填充$container
+      $container.html( configMap.template_html );
+      // 查找聊天滑块div， 把它保存到模块作用域变量$chatSlider中。模块作用域变量对spa空间内的所有函数可见
+      $chatSlider = $container.find( '.spa-slider' );
+
+      // initialize slider height and title
+      // bind the user click event to the event handler
+      // 设置聊天滑块的标题，在滑块上面绑定点击事件处理程序onClickSlider
+      $chatSlider
+        .attr( 'title', configMap.retracted_title )
+        .click( onClickSlider );
+
+      return true;
+    };
+
+    // 通过返回spa名字空间中的对象，导出公开方法，我们只导出了一个方法initModule
+    return { initModule : initModule };
+
+  }( jQuery ));
+
+  // Start spa once DOM is ready
+  // 仅在DOM可用后，使用jQuery的ready方法，启动单页应用
+  jQuery(document).ready(
+    function () { spa.initModule( jQuery('#spa') ); }
+  );
+  </script>
+</head>
+
+<body>
+  <div id="spa"></div>
+</body>
+</html>
