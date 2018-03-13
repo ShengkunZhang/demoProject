@@ -26,6 +26,7 @@
 //开始连接
 - (IBAction)connectAction:(id)sender {
     // URL: wss://echo.websocket.org:443, 可以后缀端口号
+    // URL: @"wss://streamer.cryptocompare.com" 连接失败，原因未知，貌似是因为服务器是用改的socket.io
     //1、初始化
     self.clinetSocket = [[JFRWebSocket alloc] initWithURL:[NSURL URLWithString:self.addressTF.text] protocols:@[]];
     self.clinetSocket.delegate = self;

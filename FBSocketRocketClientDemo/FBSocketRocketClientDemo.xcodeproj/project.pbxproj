@@ -137,7 +137,7 @@
 				TargetAttributes = {
 					73C3131D1F5E7AAA0011B329 = {
 						CreatedOnToolsVersion = 8.3.1;
-						DevelopmentTeam = 2Q3Z88798Z;
+						DevelopmentTeam = 6SVL99ZZ67;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -349,7 +349,7 @@
 			baseConfigurationReference = 83106D7070F1906A01B64711 /* Pods-FBSocketRocketClientDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 2Q3Z88798Z;
+				DEVELOPMENT_TEAM = 6SVL99ZZ67;
 				INFOPLIST_FILE = FBSocketRocketClientDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.myApp.FBSocketRocketClientDemo;
@@ -363,7 +363,7 @@
 			baseConfigurationReference = F9EF23A7CE76238FEAF5075C /* Pods-FBSocketRocketClientDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 2Q3Z88798Z;
+				DEVELOPMENT_TEAM = 6SVL99ZZ67;
 				INFOPLIST_FILE = FBSocketRocketClientDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.myApp.FBSocketRocketClientDemo;

@@ -28,10 +28,11 @@
 - (IBAction)connectAction:(id)sender {
     // URL: wss://echo.websocket.org:443, 可以后缀端口号
     //1、初始化
-    SocketIOClient *clinetSocket = [[SocketIOClient alloc] initWithSocketURL:[NSURL URLWithString:self.addressTF.text] config:@{}];
+    //SocketIOClient *clinetSocket = [[SocketIOClient alloc] initWithSocketURL:[NSURL URLWithString:self.addressTF.text] config:@{}];
+    SocketIOClient *clinetSocket = [[SocketIOClient alloc] initWithSocketURL:[NSURL URLWithString:@"wss://streamer.cryptocompare.com"] config:@{}];
     //2、实现链接成功回调
     [clinetSocket on:@"connect" callback:^(NSArray * data, SocketAckEmitter * ack) {
-        NSLog(@"connect");
+        [self showMessageWithStr:@"Connect"];
     }];
 //    //3、
 //    [clinetSocket on:@"currentAmount" callback:^(NSArray * data, SocketAckEmitter * ack) {
@@ -41,7 +42,6 @@
 //            [clinetSocket emit:@"update" with:@[@{@"amount": @(cur + 2.50)}]];
 //        }];
 //    }];
-    [clinetSocket connect];
     
     self.clinetSocket = clinetSocket;
 }
