@@ -150,7 +150,7 @@
     thirdBtnView.layer.borderWidth = 2;
     [topView addSubview:thirdBtnView];
     
-    CGFloat chartWidth = 200.0f;
+    CGFloat chartWidth = 200;
     self.chart.frame = CGRectMake((width - chartWidth)/2.0, thirdBtnView.frame.size.height + thirdBtnView.frame.origin.y + 30, chartWidth, chartWidth);
     // 绘制饼图
     [topView addSubview:self.chart];
@@ -419,7 +419,7 @@
         _chart.startAngle = M_PI+M_PI_2;
         [_chart setHoleRadiusPrecent:0.2];
         // 默认不显示label, 如下设置则显示标签
-        [_chart setLabelsPosition:VBLabelsPositionOnChart];
+        [_chart setLabelsPosition:VBLabelsPositionOutChart];
         // 关闭交互
         _chart.userInteractionEnabled = NO;
     }
